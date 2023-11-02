@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://b73y2oxl4obp1"]
+
+[ext_resource type="Script" path="res://initiative_buttons.gd" id="1_3plfi"]
+
+[node name="NameLabel" type="Label"]
+offset_left = 76.0
+offset_top = 60.0
+offset_right = 279.0
+offset_bottom = 86.0
+text = "Token Name"
+script = ExtResource("1_3plfi")
+
+[node name="InitiativeValue" type="SpinBox" parent="."]
+layout_mode = 0
+offset_left = 128.0
+offset_top = -3.0
+offset_right = 211.063
+offset_bottom = 28.0

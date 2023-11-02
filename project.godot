@@ -1,0 +1,48 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="OVTT"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.1", "GL Compatibility")
+run/max_fps=60
+boot_splash/bg_color=Color(0.125, 0.125, 0.125, 1)
+boot_splash/image="res://aifeala_vtt.png"
+boot_splash/minimum_display_time=1000
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/size/extend_to_title=true
+
+[editor_plugins]
+
+enabled=PackedStringArray()
+
+[input]
+
+ZoomIn={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":8,"position":Vector2(229, 17),"global_position":Vector2(233, 60),"factor":1.0,"button_index":4,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+ZoomOut={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":16,"position":Vector2(356, 22),"global_position":Vector2(360, 65),"factor":1.0,"button_index":5,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.12549, 0.12549, 0.12549, 1)

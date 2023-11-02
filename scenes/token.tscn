@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://pionayglcjsq"]
+
+[ext_resource type="Texture2D" uid="uid://ckybf8sdxukl2" path="res://icons/humanoid.png" id="1_y8lgg"]
+[ext_resource type="Script" path="res://scripts/Token.gd" id="2_uktnj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lglk6"]
+
+[sub_resource type="Theme" id="Theme_5xw5j"]
+LineEdit/styles/focus = SubResource("StyleBoxEmpty_lglk6")
+
+[node name="Token" type="Sprite2D"]
+position = Vector2(466, 341)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_y8lgg")
+script = ExtResource("2_uktnj")
+
+[node name="Name" type="LineEdit" parent="."]
+offset_left = -330.0
+offset_top = 140.0
+offset_right = 350.0
+offset_bottom = 221.0
+theme = SubResource("Theme_5xw5j")
+theme_override_font_sizes/font_size = 53
+placeholder_text = "ENTER NAME"
+alignment = 1
+expand_to_text_length = true
+context_menu_enabled = false
+flat = true

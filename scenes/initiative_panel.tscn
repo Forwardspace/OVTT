@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://u04dwimhxun8"]
+
+[ext_resource type="Script" path="res://initiative_panel.gd" id="1_b73g2"]
+
+[node name="Panel" type="Panel"]
+self_modulate = Color(0.0901961, 0.0901961, 0.0901961, 1)
+z_index = 2
+offset_left = 376.0
+offset_top = 67.0
+offset_right = 776.0
+offset_bottom = 619.0
+script = ExtResource("1_b73g2")
+
+[node name="InitiativeOrderLabel" type="Label" parent="."]
+z_index = 3
+layout_mode = 0
+offset_left = 128.0
+offset_top = 10.0
+offset_right = 246.0
+offset_bottom = 36.0
+text = "Initiative Order"
+
+[node name="ConfirmButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 157.0
+offset_top = 513.0
+offset_right = 228.0
+offset_bottom = 544.0
+text = "Confirm"
