@@ -216,12 +216,13 @@ theme_override_font_sizes/bold_font_size = 0
 autowrap_mode = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="ConfigRW" type="Node" parent="." node_paths=PackedStringArray("BackgroundImage", "State", "ResourceManager", "UI")]
+[node name="ConfigRW" type="Node" parent="." node_paths=PackedStringArray("BackgroundImage", "State", "ResourceManager", "UI", "NetworkManager")]
 script = ExtResource("13_2wtbb")
 BackgroundImage = NodePath("../BackgroundImage")
 State = NodePath("../State")
 ResourceManager = NodePath("../ResourceManager")
 UI = NodePath("../UI")
+NetworkManager = NodePath("../NetworkManager")
 
 [node name="State" type="Node" parent="." node_paths=PackedStringArray("Main", "ConfigRW")]
 script = ExtResource("14_cvhfb")

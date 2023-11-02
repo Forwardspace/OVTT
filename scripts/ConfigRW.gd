@@ -9,6 +9,7 @@ extends Node
 @export var State: Node = null
 @export var ResourceManager: Node = null
 @export var UI: Node2D = null
+@export var NetworkManager: Node = null
 
 func _ready():
 	# Check (and possibly create) the required folders
@@ -34,6 +35,9 @@ func LoadSettings(config):
 	if not BackgroundImage:
 		print("Background image nonexistant!")
 		return
+	
+	# Relay server to connect to
+	NetworkManager.ServerURL = config.get_value("General", "RelayServer") + ":" + str(NetworkManager.Port)
 	
 	BackgroundImage.LoadImage(config.get_value("Background", "Image"))
 	RenderingServer.set_default_clear_color(

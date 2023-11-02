@@ -1,8 +1,9 @@
 extends Node
 
-@export var ServerURL = "192.168.100.30:4174"
+@export var ServerURL = ""
 @export var State: Node = null
 @export var ResourceManager: Node = null
+@export var Port = 4174
 
 var client = WebSocketPeer.new()
 var connected = false
