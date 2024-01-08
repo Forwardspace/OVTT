@@ -1,10 +1,14 @@
 extends Node
 
 # State is, of course, responsible for storing and managing Token and Map
-# states and redrawing each when neccessary
+# states and initiating redraws for each when neccessary
 
 @export var Main: Node = null
 @export var ConfigRW: Node = null
+@export var NetworkManager: Node = null
+@export var CurrentMap: Node2D = null
+@export var ResourceManager: Node = null
+@export var UI: Node = null
 
 @export var IsServer: bool = true
 
@@ -13,6 +17,7 @@ var next_token_id = 0
 
 var current_map = ""
 var current_map_config = ""
+var current_map_index = 0
 var map_scale = 1.0
 
 class TokenData:
@@ -61,10 +66,37 @@ func GetNewTokenID():
 	return next_token_id
 
 func UpdateTokenPositionNoRedraw(token):
-	tokens[FindTokenIndexByID(token.id)].position = token.position
+	var index = FindTokenIndexByID(token.id)
+	
+	tokens[index].position = token.position
+	
+	var meta = {}
+	meta.event = "send-token-position"
+	meta.token_id = index
+	meta.position_x = token.position.x
+	meta.position_y = token.position.y
+	NetworkManager.SendJSON(meta)
+
+func UpdateTokenPositionNetwork(meta):
+	tokens[meta.token_id].position = Vector2(meta.position_x, meta.position_y)
+	
+	ForceTokenRedraw()
 	
 func UpdateTokenNameNoRedraw(token, name):
-	tokens[FindTokenIndexByID(token.id)].name = name
+	var index = FindTokenIndexByID(token.id)
+	
+	tokens[index].name = name
+	
+	var meta = {}
+	meta.event = "send-token-name"
+	meta.token_id = index
+	meta.name = name
+	NetworkManager.SendJSON(meta)
+	
+func UpdateTokenNameNetwork(meta):
+	tokens[meta.token_id].name = meta.name
+	
+	ForceTokenRedraw()
 
 #######################
 
@@ -76,6 +108,24 @@ func SetMapScale(scale):
 
 func SaveCurrentState():
 	ConfigRW.WriteMapSettings(current_map_config, map_scale, tokens)
+
+#######################
+
+func SendMapStateToClients():
+	if current_map == "":
+		return # No need to send anything
+	
+	var meta = {}
+	meta.event = "send-map-state"
+	meta.map_name = current_map
+	meta.map_index = current_map_index
+	meta.map_scale = map_scale
+	
+	NetworkManager.SendJSON(meta)
+
+func RecieveMapStateFromServer(state):
+	UI.SwitchMap(state.map_index)
+	SetMapScale(state.map_scale)
 
 func _ready():
 	pass # Replace with function body.

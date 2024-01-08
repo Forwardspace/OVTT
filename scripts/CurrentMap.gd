@@ -6,9 +6,9 @@ var dragging = false
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ZoomIn"):
-		scale *= ScaleFactor
+		ZoomIn()
 	elif event.is_action("ZoomOut"):
-		scale /= ScaleFactor
+		ZoomOut()
 	elif event is InputEventMouseButton:
 		dragging = event.pressed
 	elif event is InputEventMouseMotion:
@@ -18,6 +18,12 @@ func _unhandled_input(event):
 		return
 
 	get_viewport().set_input_as_handled()
+
+func ZoomIn():
+	scale *= ScaleFactor
+	
+func ZoomOut():
+	scale /= ScaleFactor
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

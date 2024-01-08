@@ -1,5 +1,7 @@
 extends Sprite2D
 
+# Token is a UI representation of an entry in State's "tokens" array
+
 @export var ResourceManager: Node = null
 @export var State: Node = null
 
@@ -12,7 +14,6 @@ func SetName(name):
 
 func SetIcon(filename):
 	if filename == "" or filename == null:
-		print("Null token icon filename")
 		return
 	
 	texture = ResourceManager.GetTexture(filename)	

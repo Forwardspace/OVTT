@@ -1,13 +1,14 @@
 extends Node
 
 # Manages (mostly image) resources by eliminating duplicate loading
-# and automatically transferring resources to connected peers
+# and automatically transferring resources to connected peers (WIP)
 # Main purpose is to keep clients and servers fully synchronized
 
 @export var State: Node = null
 @export var NetworkManager: Node = null
 
 var resources = []
+var raw_data = []
 
 class TextureResource:
 	var filename = ""
@@ -19,16 +20,10 @@ func GetTexture(filename):
 	if existingResource:
 		# Great, no need to load anything
 		return existingResource
-		
-	# None found - are we a server?
-	if State.IsServer:
-		#Yes - simply load it from disk
-		var newResource = LoadTextureResourceFromFile(filename)
-		
-		return newResource.resource
 	else:
-		#Uhhhh... something failed to transfer
-		print("Resource missing (" + filename + ")")
+		# Simply load it from disk
+		var newResource = LoadTextureResourceFromFile(filename)
+		return newResource.resource
 
 func GetTextureOrNull(filename):
 	for resource in resources:
@@ -38,67 +33,73 @@ func GetTextureOrNull(filename):
 
 func LoadTextureResourceFromFile(filename):
 	var path_prefix = OS.get_executable_path().get_base_dir() + "/"
-	var image = Image.load_from_file(path_prefix + filename)
 	
-	print(path_prefix + filename)
+	var image = Image.new()
+	var err = image.load(path_prefix + filename)
+	if err != OK:
+		print("Error in loading resource from file (" + str(err) +")")
+		
+	var data = image.data
+	# Augment the data structure by adding filename and format metadata to it
+	data.filename = filename
+	data.format_int = image.get_format()		# This is useful later when sending it over network
+	raw_data.append(data)
 	
 	var resource = TextureResource.new()
 	resource.resource = ImageTexture.create_from_image(image)
 	resource.filename = filename
 	resources.append(resource)
 	
-	SendImageToClients(resource.filename, image)
+	#SendImageToClients(data) WIP
 	
 	return resource
 	
 func LoadTextureResourceFromData(image):
 	var resource = TextureResource.new()
 	resource.filename = image["filename"]
-	resource.resource = Image.create_from_data(image["width"], image["height"], false, Image.FORMAT_RGB8, image["data"])
+	resource.resource = Image.create_from_data(image["width"], image["height"], false, image["format_int"], image["data"])
 	resources.append(resource)
+	
+	print("Added " + resource.filename)
+	print("Size: " + str(resource.resource.data.size()))
 	
 	return	# This should not need to return anything; loading should happen in advance
 
+# Dropped icons should be copied to icons directory
 func CopyDroppedIcon(path):
 	var file = "/icons/" + path.get_file()
 	DirAccess.copy_absolute(path, OS.get_executable_path().get_base_dir() + file)
 
+# Dropped maps should be copied to maps directory
 func CopyDroppedMap(path):
 	var file = "/maps/" + path.get_file()
 	DirAccess.copy_absolute(path, OS.get_executable_path().get_base_dir() + file)
 
 #################### NETWORKING
 
-func SendImageToClients(filename, image):
-	# The transfer is done like this:
-	# Image -> dictionary -> JSON -> Bytes over network
-	var data = image.data
-	data["filename"] = filename
-	NetworkManager.SendBroadcast(JSON.stringify(data))
-	
-func SendImageToClientsInitial(filename, image):
-	var data = image.data
-	data["filename"] = filename
-	NetworkManager.SendInitialTransfer(JSON.stringify(data))
+#func SendImageToClients(image):
+#	NetworkManager.SendImageResource(image)
 	
 func TransferInitialResourcesToClients():
+	# Note: Network resource transfer is currently WIP
+	# Just send map state (map, tokens, ...) for now
+	
 	# Image data is not stored after loading (only texures are, which store data in the GPU)
 	# Therefore, we have to load the images again
-	var path_prefix = OS.get_executable_path().get_base_dir() + "/"
+#	var path_prefix = OS.get_executable_path().get_base_dir() + "/"
 	
-	for resource in resources:
-		var image = Image.load_from_file(path_prefix + resource.filename)
-		SendImageToClientsInitial(resource.filename, image)	
+#	for data in raw_data:
+#		SendImageToClients(data)
 		
-	NetworkManager.EndInitialTransfer()
+	State.SendMapStateToClients()
 			
-func ReceiveTextureResourceFromServer(data):
-	var dict = JSON.parse_string(data)
-	for res in resources:
-		if res.filename == dict["filename"]:
-			return 	# We already have this resource
+#func ReceiveTextureResourceFromServer(data):
+#	for res in resources:
+#		if res.filename == data["filename"]:
+#			return 	# We already have this resource
 			
-	LoadTextureResourceFromData(dict)
+#	LoadTextureResourceFromData(data)
+#	print("Added: " + data["filename"])
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

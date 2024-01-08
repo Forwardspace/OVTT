@@ -1,6 +1,7 @@
 extends Node2D
 
 # Handles miscellaneous UI actions, but also map switching
+# TODO: offload map switching to State
 
 @export var ConfigRW: Node = null
 @export var ResourceManager: Node = null
@@ -32,6 +33,9 @@ func _ready():
 	$MapSelector/MapZoomOut.connect("button_down", MapZoomOut)
 	$MapSelector/MapZoomIn.connect("button_down", MapZoomIn)
 	
+	$ZoomOutButton.connect("button_down", MapDisplay.ZoomOut)
+	$ZoomInButton.connect("button_down", MapDisplay.ZoomIn)
+	
 	pass
 	
 func MapZoomOut():
@@ -41,11 +45,17 @@ func MapZoomIn():
 	State.SetMapScale(State.map_scale * MapScaleFactor)
 
 func SwitchMap(index):
-	State.ResetTokens()
-	
 	if (index == new_map_selector_index):
 		print("TODO: Create a new map")
 		return
+		
+	if (index == State.current_map_index):
+		# No need to do anything
+		return
+	
+	# Save current map
+	ConfigRW.WriteMapSettings(State.current_map_config, State.map_scale, State.tokens)
+	State.ResetTokens()
 	
 	#Index 0 is Empty
 	var map_config = ConfigRW.LoadMapConfig(map_configs[index - 1])
@@ -54,11 +64,12 @@ func SwitchMap(index):
 	
 	# Basic data from the first section
 	var map_image = map_config.get_value("General", "Image")
-	State.map_scale = map_config.get_value("General", "IconScale", 1.0)	#TODO
+	State.SetMapScale(map_config.get_value("General", "TokenScale", 1.0))
 	
 	MapDisplay.texture = ResourceManager.GetTexture(map_image)
 	State.current_map = map_image
 	State.current_map_config = map_configs[index - 1]
+	State.current_map_index = index
 	
 	# Other sections are considered tokens - load them
 	var variable_sections = map_config.get_sections()
@@ -66,6 +77,8 @@ func SwitchMap(index):
 	
 	for token in variable_sections:
 		ConfigRW.LoadTokenSettings(map_config, token)
+		
+	State.SendMapStateToClients()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

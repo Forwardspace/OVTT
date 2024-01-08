@@ -224,10 +224,14 @@ ResourceManager = NodePath("../ResourceManager")
 UI = NodePath("../UI")
 NetworkManager = NodePath("../NetworkManager")
 
-[node name="State" type="Node" parent="." node_paths=PackedStringArray("Main", "ConfigRW")]
+[node name="State" type="Node" parent="." node_paths=PackedStringArray("Main", "ConfigRW", "NetworkManager", "CurrentMap", "ResourceManager", "UI")]
 script = ExtResource("14_cvhfb")
 Main = NodePath("..")
 ConfigRW = NodePath("../ConfigRW")
+NetworkManager = NodePath("../NetworkManager")
+CurrentMap = NodePath("../CurrentMap")
+ResourceManager = NodePath("../ResourceManager")
+UI = NodePath("../UI")
 
 [node name="ResourceManager" type="Node" parent="." node_paths=PackedStringArray("State", "NetworkManager")]
 script = ExtResource("15_0np3i")

@@ -41,6 +41,11 @@ ZoomOut={
 ]
 }
 
+[network]
+
+limits/packet_peer_stream/max_buffer_po2=22
+limits/webrtc/max_channel_in_buffer_kb=640
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

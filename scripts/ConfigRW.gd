@@ -3,7 +3,6 @@ extends Node
 # ConfigRW is responsible for interfacing with the filesystem regarding settings
 # and other configuration, as well as saving & loading the current state
 
-
 @export var ConfigFilename = "settings.cfg"
 @export var BackgroundImage: Sprite2D = null
 @export var State: Node = null
@@ -38,6 +37,7 @@ func LoadSettings(config):
 	
 	# Relay server to connect to
 	NetworkManager.ServerURL = config.get_value("General", "RelayServer") + ":" + str(NetworkManager.Port)
+	NetworkManager.IsServer = config.get_value("General", "StartAsServer", false)
 	
 	BackgroundImage.LoadImage(config.get_value("Background", "Image"))
 	RenderingServer.set_default_clear_color(
@@ -73,7 +73,6 @@ func LoadTokenSettings(config, token):
 
 func WriteMapSettings(config, scale, tokens, image=null):
 	var cfg = ConfigFile.new()
-	cfg.set_value("General", "TokenScale", scale)
 	
 	if config != "":
 		cfg.load(OS.get_executable_path().get_base_dir() + "/" + config)
@@ -87,6 +86,8 @@ func WriteMapSettings(config, scale, tokens, image=null):
 		# New file - make the first section
 		cfg.set_value("General", "Image", image)
 		
+	cfg.set_value("General", "TokenScale", scale)
+	
 	# Write tokens as sections
 	for token in tokens:
 		cfg.set_value(token.name, "Image", token.icon_filename)
