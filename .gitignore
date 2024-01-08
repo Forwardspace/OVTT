@@ -1,6 +1,9 @@
 # Godot 4+ specific ignores
 .godot/
 LEGACY/
+maps/
+resources/
+*.cfg
 *.rar
 *.tmp
 *.exe
