@@ -1,7 +1,7 @@
 # OVTT
 ## Open Virtual Tabletop
 
-OVTT is a simple solution for hosting TTRPG sessions remotely or in person.
+OVTT is a simple solution for hosting TTRPG (Tabletop Role Playing Game) sessions remotely or in person.
 Current features:
 - map import and switching
 - creature/player tokens
